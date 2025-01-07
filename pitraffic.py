@@ -47,7 +47,7 @@ while True:
   #print("date and time =", dt_string)
   #print("hour =", dr_string)
 
-  if dr_string > '22' and dr_string < '6':
+  if dr_string >= '22' and dr_string < '6':
     with open("/dev/shm/mode.txt", "w") as mode:
        mode.write("flash")
     with open("/dev/shm/sigstate.txt", "w") as sigstate:
