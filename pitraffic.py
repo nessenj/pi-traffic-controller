@@ -44,12 +44,16 @@ while True:
   # dd/mm/YY H:M:S
   dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
   dr_string = now.strftime("%H")
-  print("date and time =", dt_string)
+  #print("date and time =", dt_string)
   #print("hour =", dr_string)
 
-  if dr_string == 13:
-    print("flash loop because hour is", dr_string)
+  if dr_string == '18':
+    sys.stdout.write("\r")
+    sys.stdout.write("flash loop.")
+    sys.stdout.flush()
     # Go into flash
+    nbdontwalk.off()
+    wbdontwalk.off()
     nbred.on()
     wbred.off()
     sleep(0.50)
