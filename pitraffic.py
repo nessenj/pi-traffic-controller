@@ -47,10 +47,13 @@ while True:
   #print("date and time =", dt_string)
   #print("hour =", dr_string)
 
-  if dr_string == '18':
-    sys.stdout.write("\r")
-    sys.stdout.write("flash loop.")
-    sys.stdout.flush()
+  if dr_string > '22' and dr_string < '6':
+    with open("/dev/shm/mode.txt", "w") as mode:
+       mode.write("flash")
+    with open("/dev/shm/sigstate.txt", "w") as sigstate:
+       sigstate.write("R . R . . . . .")
+    with open("/dev/shm/pedstate.txt", "w") as pedstate:
+       pedstate.write(". . . . . . . .")
     # Go into flash
     nbdontwalk.off()
     wbdontwalk.off()
@@ -62,8 +65,16 @@ while True:
     sleep(0.50)
     dr_string = now.strftime("%H")
   else:  
-    print("normal loop because hour is", dr_string)
+    with open("/dev/shm/mode.txt", "w") as mode:
+       mode.write("normal")
+    #print("normal loop because hour is", dr_string)
     # Start Up
+
+    with open("/dev/shm/sigstate.txt", "w") as sigstate:
+       sigstate.write("R . R . . . . .")
+    with open("/dev/shm/pedstate.txt", "w") as pedstate:
+       pedstate.write("D . D . . . . .")
+
     nbred.on()
     nbyellow.off()
     nbgreen.off()
@@ -77,10 +88,21 @@ while True:
     wbwalk.off()
   
     for i in range(redoverlap,-1,-1):
-       sys.stdout.write("\r")
-       sys.stdout.write("red overlap for {:2d} seconds.".format(i))
-       sys.stdout.flush()
+       with open("/dev/shm/overlap.txt", "w") as timer:
+         timer.write("{:2d}".format(i))
+
+       with open("/dev/shm/timer.txt", "w") as timer:
+         timer.write("{:2d}".format(i))
+
+       #sys.stdout.write("\r")
+       #sys.stdout.write("red overlap for {:2d} seconds.".format(i))
+       #sys.stdout.flush()
        sleep(1)
+
+    with open("/dev/shm/sigstate.txt", "w") as sigstate:
+       sigstate.write("R . G . . . . .")
+    with open("/dev/shm/pedstate.txt", "w") as pedstate:
+       pedstate.write("D . D . . . . .")
 
     wbred.off()
     wbyellow.off()
@@ -90,53 +112,109 @@ while True:
 
     # We have decided to cross the intersection
     if wbwalkcall == 1:
-      print("\rwb green");
+      #print("\rwb green");
       wbdontwalk.off()
       wbwalk.on()
+
+      with open("/dev/shm/sigstate.txt", "w") as sigstate:
+         sigstate.write("R . G . . . . .")
+      with open("/dev/shm/pedstate.txt", "w") as pedstate:
+         pedstate.write("D . W . . . . .")
+      with open("/dev/shm/state.txt", "w") as state:
+         state.write("WALK")
+
       for i in range(wbpedcycle,-1,-1):
-         sys.stdout.write("\r")
-         sys.stdout.write("wb walk for {:2d} seconds.".format(i))
-         sys.stdout.flush()
+         with open("/dev/shm/timer.txt", "w") as timer:
+            timer.write("{:2d}".format(i))
+
+         #sys.stdout.write("\r")
+         #sys.stdout.write("wb walk for {:2d} seconds.".format(i))
+         #sys.stdout.flush()
          sleep(1)
+
       wbwalk.off()
       wbdontwalk.on()
+
+      with open("/dev/shm/sigstate.txt", "w") as sigstate:
+         sigstate.write("R . G . . . . .")
+      with open("/dev/shm/pedstate.txt", "w") as pedstate:
+         pedstate.write("D . c . . . . .")
+      with open("/dev/shm/state.txt", "w") as state:
+            state.write("CLEAR")
+
       for i in range(wbpedclear,-1,-1):
-         sys.stdout.write("\r")
-         sys.stdout.write("wb ped clear for {:2d} seconds.".format(i))
-         sys.stdout.flush()
+         with open("/dev/shm/timer.txt", "w") as timer:
+            timer.write("{:2d}".format(i))
+
+         #sys.stdout.write("\r")
+         #sys.stdout.write("wb ped clear for {:2d} seconds.".format(i))
+         #sys.stdout.flush()
          wbdontwalk.off()
          sleep(0.50)
          wbdontwalk.on()
          sleep(0.50)
     else:
+       with open("/dev/shm/sigstate.txt", "w") as sigstate:
+          sigstate.write("R . G . . . . .")
+       with open("/dev/shm/pedstate.txt", "w") as pedstate:
+          pedstate.write("D . D . . . . .")
+
        wbdontwalk.on()
        wbwalk.off()
+
+       with open("/dev/shm/state.txt", "w") as state:
+          state.write("MAX")
        sleeptime = random.randint(wbmintime, wbmaxtime)
        for i in range(sleeptime,-1,-1):
-         sys.stdout.write("\r")
-         sys.stdout.write("wb green for {:2d} seconds.".format(i))
-         sys.stdout.flush()
+         with open("/dev/shm/timer.txt", "w") as timer:
+            timer.write("{:2d}".format(i))
+         #sys.stdout.write("\r")
+         #sys.stdout.write("wb green for {:2d} seconds.".format(i))
+         #sys.stdout.flush()
          sleep(1)
+
+    with open("/dev/shm/sigstate.txt", "w") as sigstate:
+       sigstate.write("R . Y . . . . .")
+    with open("/dev/shm/pedstate.txt", "w") as pedstate:
+       pedstate.write("D . D . . . . .")
 
     wbred.off()
     wbyellow.on()
     wbgreen.off()
 
+    with open("/dev/shm/state.txt", "w") as state:
+       state.write("YELLOW")
     for i in range(wbyellowclear,-1,-1):
-       sys.stdout.write("\r")
-       sys.stdout.write("wb yellow for {:2d} seconds.".format(i))
-       sys.stdout.flush()
+       with open("/dev/shm/timer.txt", "w") as timer:
+          timer.write("{:2d}".format(i))
+       #sys.stdout.write("\r")
+       #sys.stdout.write("wb yellow for {:2d} seconds.".format(i))
+       #sys.stdout.flush()
        sleep(1)
+
+    with open("/dev/shm/sigstate.txt", "w") as sigstate:
+       sigstate.write("R . R . . . . .")
+    with open("/dev/shm/pedstate.txt", "w") as pedstate:
+       pedstate.write("D . D . . . . .")
 
     wbred.on()
     wbyellow.off()
     wbgreen.off()
 
+    with open("/dev/shm/state.txt", "w") as state:
+       state.write("RED")
     for i in range(redoverlap,-1,-1):
-       sys.stdout.write("\r")
-       sys.stdout.write("red overlap for {:2d} seconds.".format(i))
-       sys.stdout.flush()
+       with open("/dev/shm/timer.txt", "w") as timer:
+          timer.write("{:2d}".format(i))
+       #sys.stdout.write("\r")
+       #sys.stdout.write("red overlap for {:2d} seconds.".format(i))
+       #sys.stdout.flush()
        sleep(1)
+
+    with open("/dev/shm/sigstate.txt", "w") as sigstate:
+       sigstate.write("G . R . . . . .")
+    with open("/dev/shm/pedstate.txt", "w") as pedstate:
+       pedstate.write("D . D . . . . .")
 
     nbred.off()
     nbyellow.off()
@@ -146,43 +224,98 @@ while True:
 
     # We have decided to cross the intersection
     if nbwalkcall == 1:
-      print("\rnb green")
+      #print("\rnb green")
+
+      with open("/dev/shm/sigstate.txt", "w") as sigstate:
+        sigstate.write("G . R . . . . .")
+      with open("/dev/shm/pedstate.txt", "w") as pedstate:
+        pedstate.write("W . D . . . . .")
+
       nbdontwalk.off()
       nbwalk.on()
+
+      with open("/dev/shm/state.txt", "w") as state:
+         state.write("WALK")
+
       for i in range(nbpedcycle,-1,-1):
-         sys.stdout.write("\r")
-         sys.stdout.write("nb walk for {:2d} seconds.".format(i))
-         sys.stdout.flush()
+         with open("/dev/shm/timer.txt", "w") as timer:
+            timer.write("{:2d}".format(i))
+         #sys.stdout.write("\r")
+         #sys.stdout.write("nb walk for {:2d} seconds.".format(i))
+         #sys.stdout.flush()
          sleep(1)
+
+      with open("/dev/shm/sigstate.txt", "w") as sigstate:
+        sigstate.write("G . R . . . . .")
+      with open("/dev/shm/pedstate.txt", "w") as pedstate:
+        pedstate.write("c . D . . . . .")
+
       nbwalk.off()
       nbdontwalk.on()
+
+      with open("/dev/shm/state.txt", "w") as state:
+         state.write("CLEAR")
+
       for i in range(nbpedclear,-1,-1):
-        sys.stdout.write("\r")
-        sys.stdout.write("nb ped clear {:2d}".format(i))
-        sys.stdout.flush()
+        with open("/dev/shm/timer.txt", "w") as timer:
+           timer.write("{:2d}".format(i))
+        #sys.stdout.write("\r")
+        #sys.stdout.write("nb ped clear {:2d}".format(i))
+        #sys.stdout.flush()
+
         nbdontwalk.off()
         sleep(0.50)
         nbdontwalk.on()
         sleep(0.50)
     else:
+      with open("/dev/shm/sigstate.txt", "w") as sigstate:
+        sigstate.write("G . R . . . . .")
+      with open("/dev/shm/pedstate.txt", "w") as pedstate:
+        pedstate.write("D . D . . . . .")
+
       nbdontwalk.on()
       nbwalk.off()
+
+      with open("/dev/shm/state.txt", "w") as state:
+         state.write("MAX")
+
       sleeptime = random.randint(nbmintime, nbmaxtime)
       for i in range(sleeptime,-1,-1):
-         sys.stdout.write("\r")
-         sys.stdout.write("nb rest for {:2d} seconds.".format(i))
-         sys.stdout.flush()
+         with open("/dev/shm/timer.txt", "w") as timer:
+            timer.write("{:2d}".format(i))
+
+         #sys.stdout.write("\r")
+         #sys.stdout.write("nb rest for {:2d} seconds.".format(i))
+         #sys.stdout.flush()
          sleep(1)
+
+    with open("/dev/shm/sigstate.txt", "w") as sigstate:
+       sigstate.write("Y . R . . . . .")
+    with open("/dev/shm/pedstate.txt", "w") as pedstate:
+       pedstate.write("D . D . . . . .")
 
     nbred.off()
     nbyellow.on()
     nbgreen.off()
 
+    with open("/dev/shm/state.txt", "w") as state:
+       state.write("YELLOW")
+
     for i in range(nbyellowclear,-1,-1):
-       sys.stdout.write("\r")
-       sys.stdout.write("nb yellow for {:2d} seconds.".format(i))
-       sys.stdout.flush()
+       with open("/dev/shm/timer.txt", "w") as timer:
+          timer.write("{:2d}".format(i))
+       #sys.stdout.write("\r")
+       #sys.stdout.write("nb yellow for {:2d} seconds.".format(i))
+       #sys.stdout.flush()
        sleep(1)
+
+    with open("/dev/shm/sigstate.txt", "w") as sigstate:
+       sigstate.write("R . R . . . . .")
+    with open("/dev/shm/pedstate.txt", "w") as pedstate:
+       pedstate.write("D . D . . . . .")
+
+    with open("/dev/shm/state.txt", "w") as state:
+       state.write("RED")
 
     nbred.on()
     nbyellow.off()
