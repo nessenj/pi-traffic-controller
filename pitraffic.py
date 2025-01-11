@@ -36,6 +36,8 @@ wbyellowclear = 3
 
 # Globals
 redoverlap = 2
+startflash = "22"
+endflash = "07"
 
 while True:
   # datetime object containing current date and time
@@ -47,13 +49,13 @@ while True:
   #print("date and time =", dt_string)
   #print("hour =", dr_string)
 
-  if dr_string >= '22' and dr_string < '6':
+  if dr_string >= startflash and dr_string != endflash:
     with open("/dev/shm/mode.txt", "w") as mode:
        mode.write("flash")
     with open("/dev/shm/sigstate.txt", "w") as sigstate:
-       sigstate.write("R . R . . . . .")
+       sigstate.write("        .R.R.... ........")
     with open("/dev/shm/pedstate.txt", "w") as pedstate:
-       pedstate.write(". . . . . . . .")
+       pedstate.write("        ........ ........")
     # Go into flash
     nbdontwalk.off()
     wbdontwalk.off()
@@ -71,9 +73,9 @@ while True:
     # Start Up
 
     with open("/dev/shm/sigstate.txt", "w") as sigstate:
-       sigstate.write("R . R . . . . .")
+       sigstate.write("        .R.R.... ........")
     with open("/dev/shm/pedstate.txt", "w") as pedstate:
-       pedstate.write("D . D . . . . .")
+       pedstate.write("        .D.D.... ........")
 
     nbred.on()
     nbyellow.off()
@@ -100,9 +102,9 @@ while True:
        sleep(1)
 
     with open("/dev/shm/sigstate.txt", "w") as sigstate:
-       sigstate.write("R . G . . . . .")
+       sigstate.write("        .R.G.... ........")
     with open("/dev/shm/pedstate.txt", "w") as pedstate:
-       pedstate.write("D . D . . . . .")
+       pedstate.write("        .D.D.... ........")
 
     wbred.off()
     wbyellow.off()
@@ -117,9 +119,10 @@ while True:
       wbwalk.on()
 
       with open("/dev/shm/sigstate.txt", "w") as sigstate:
-         sigstate.write("R . G . . . . .")
+         sigstate.write("     .R.G.... ........")
       with open("/dev/shm/pedstate.txt", "w") as pedstate:
-         pedstate.write("D . W . . . . .")
+         pedstate.write("     .D.W.... ........")
+
       with open("/dev/shm/state.txt", "w") as state:
          state.write("WALK")
 
@@ -136,9 +139,10 @@ while True:
       wbdontwalk.on()
 
       with open("/dev/shm/sigstate.txt", "w") as sigstate:
-         sigstate.write("R . G . . . . .")
+         sigstate.write("     .R.G.... ........")
       with open("/dev/shm/pedstate.txt", "w") as pedstate:
-         pedstate.write("D . c . . . . .")
+         pedstate.write("     .D.c.... ........")
+
       with open("/dev/shm/state.txt", "w") as state:
             state.write("CLEAR")
 
@@ -155,9 +159,9 @@ while True:
          sleep(0.50)
     else:
        with open("/dev/shm/sigstate.txt", "w") as sigstate:
-          sigstate.write("R . G . . . . .")
+          sigstate.write("     .R.G.... ........")
        with open("/dev/shm/pedstate.txt", "w") as pedstate:
-          pedstate.write("D . D . . . . .")
+          pedstate.write("     .D.D.... ........")
 
        wbdontwalk.on()
        wbwalk.off()
@@ -174,16 +178,16 @@ while True:
          sleep(1)
 
     with open("/dev/shm/sigstate.txt", "w") as sigstate:
-       sigstate.write("R . Y . . . . .")
+       sigstate.write("     .R.Y.... ........")
     with open("/dev/shm/pedstate.txt", "w") as pedstate:
-       pedstate.write("D . D . . . . .")
+       pedstate.write("     .D.D.... ........")
 
     wbred.off()
     wbyellow.on()
     wbgreen.off()
 
     with open("/dev/shm/state.txt", "w") as state:
-       state.write("YELLOW")
+       state.write("YLW")
     for i in range(wbyellowclear,-1,-1):
        with open("/dev/shm/timer.txt", "w") as timer:
           timer.write("{:2d}".format(i))
@@ -193,9 +197,9 @@ while True:
        sleep(1)
 
     with open("/dev/shm/sigstate.txt", "w") as sigstate:
-       sigstate.write("R . R . . . . .")
+       sigstate.write("     .R.R.... ........")
     with open("/dev/shm/pedstate.txt", "w") as pedstate:
-       pedstate.write("D . D . . . . .")
+       pedstate.write("     .D.D.... ........")
 
     wbred.on()
     wbyellow.off()
@@ -212,9 +216,9 @@ while True:
        sleep(1)
 
     with open("/dev/shm/sigstate.txt", "w") as sigstate:
-       sigstate.write("G . R . . . . .")
+       sigstate.write("     .G.R.... ........")
     with open("/dev/shm/pedstate.txt", "w") as pedstate:
-       pedstate.write("D . D . . . . .")
+       pedstate.write("     .D.D.... ........")
 
     nbred.off()
     nbyellow.off()
@@ -227,15 +231,15 @@ while True:
       #print("\rnb green")
 
       with open("/dev/shm/sigstate.txt", "w") as sigstate:
-        sigstate.write("G . R . . . . .")
+        sigstate.write("     .G.R.... ........")
       with open("/dev/shm/pedstate.txt", "w") as pedstate:
-        pedstate.write("W . D . . . . .")
+        pedstate.write("     .W.D.... ........")
 
       nbdontwalk.off()
       nbwalk.on()
 
       with open("/dev/shm/state.txt", "w") as state:
-         state.write("WALK")
+         state.write("WLK")
 
       for i in range(nbpedcycle,-1,-1):
          with open("/dev/shm/timer.txt", "w") as timer:
@@ -246,15 +250,15 @@ while True:
          sleep(1)
 
       with open("/dev/shm/sigstate.txt", "w") as sigstate:
-        sigstate.write("G . R . . . . .")
+        sigstate.write("     .G.R.... ........")
       with open("/dev/shm/pedstate.txt", "w") as pedstate:
-        pedstate.write("c . D . . . . .")
+        pedstate.write("     .c.D.... ........")
 
       nbwalk.off()
       nbdontwalk.on()
 
       with open("/dev/shm/state.txt", "w") as state:
-         state.write("CLEAR")
+         state.write("CLR")
 
       for i in range(nbpedclear,-1,-1):
         with open("/dev/shm/timer.txt", "w") as timer:
@@ -269,9 +273,9 @@ while True:
         sleep(0.50)
     else:
       with open("/dev/shm/sigstate.txt", "w") as sigstate:
-        sigstate.write("G . R . . . . .")
+        sigstate.write("     .G.R.... ........")
       with open("/dev/shm/pedstate.txt", "w") as pedstate:
-        pedstate.write("D . D . . . . .")
+        pedstate.write("     .D.D.... ........")
 
       nbdontwalk.on()
       nbwalk.off()
@@ -290,16 +294,16 @@ while True:
          sleep(1)
 
     with open("/dev/shm/sigstate.txt", "w") as sigstate:
-       sigstate.write("Y . R . . . . .")
+       sigstate.write("     .Y.R.... ........")
     with open("/dev/shm/pedstate.txt", "w") as pedstate:
-       pedstate.write("D . D . . . . .")
+       pedstate.write("     .D.D.... ........")
 
     nbred.off()
     nbyellow.on()
     nbgreen.off()
 
     with open("/dev/shm/state.txt", "w") as state:
-       state.write("YELLOW")
+       state.write("YLW")
 
     for i in range(nbyellowclear,-1,-1):
        with open("/dev/shm/timer.txt", "w") as timer:
@@ -310,9 +314,9 @@ while True:
        sleep(1)
 
     with open("/dev/shm/sigstate.txt", "w") as sigstate:
-       sigstate.write("R . R . . . . .")
+       sigstate.write("     .R.R.... ........")
     with open("/dev/shm/pedstate.txt", "w") as pedstate:
-       pedstate.write("D . D . . . . .")
+       pedstate.write("     .D.D.... ........")
 
     with open("/dev/shm/state.txt", "w") as state:
        state.write("RED")

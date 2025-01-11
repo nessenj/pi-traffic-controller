@@ -31,10 +31,14 @@ def get_system_stats():
        for line in timer:
           timeleft = line.strip()
 
+    blank = " "
+    blank2 = " "
+
     return {
-        curstate: sigs,
-        timeleft: peds,
-        "": "",
+        "RING  1  RING  2": "PED  ........ ........",
+        curstate + ' ' + timeleft + '  ' + 'RED RST': "VEH  ........ ........",
+        " ": '     ' + sigs,
+        "  ": '     ' + peds,
         curmode: dt_string
     }
 
@@ -42,8 +46,8 @@ def create_dashboard(stats):
     # Create a rich table to display the stats
     table = Table(title="Traffic Signal Dashboard")
 
-    table.add_column("Metric", justify="right")
-    table.add_column("1 2 3 4 5 6 7 8", justify="center")
+    table.add_column("", justify="right")
+    table.add_column("PHS..12345678 90123456", justify="center")
 
     for key, value in stats.items():
         table.add_row(key, f"{value} %") if isinstance(value, (int, float)) else table.add_row(key, str(value))
